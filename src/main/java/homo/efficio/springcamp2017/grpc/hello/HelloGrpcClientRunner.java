@@ -19,7 +19,13 @@ public class HelloGrpcClientRunner {
                                     clientStubFactory.getAsyncStub(),
                                     clientStubFactory.getFutureStub());
 
-        grpcClient.sendBlockingUnaryMessage("Blocking Unary, gㅏ벼운 RPC, gPRC");
+        // Blocking Unary
+//        grpcClient.sendBlockingUnaryMessage("Blocking Unary, gㅏ벼운 RPC, gPRC");
+//        clientStubFactory.shutdownChannel();
+
+        // Async Unary
+        grpcClient.sendAsyncUnaryMessage("Async Unary, gㅏ벼운 RPC, gRPC");
+        Thread.sleep(3000);
         clientStubFactory.shutdownChannel();
     }
 }
