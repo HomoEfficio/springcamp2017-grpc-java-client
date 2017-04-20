@@ -95,4 +95,35 @@ public class HelloGrpcClient {
                 (response) -> logger.info("Server Streaming Hello 서비스 응답: " + response.getWelcomeMessage())
         );
     }
+
+    public void sendAsyncServerStreamingMessage(String clientName) {
+
+        // 클라이언트 비즈니스 로직 수행 결과인 clientName으로 request 생성
+        HelloRequest request = HelloRequest.newBuilder().setClientName(clientName).build();
+        Iterator<HelloResponse> responseIterator;
+
+        logger.info("Server Streaming Hello 서비스 Async 호출, 메시지 [" + clientName + "]");
+        asyncStub.serverStreamingHello(
+                request, 
+                new StreamObserver<HelloResponse>() {
+                    @Override
+                    public void onNext(HelloResponse response) {
+                        logger.info("Async Server Streaming 서버로부터의 응답 " + response.getWelcomeMessage());
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        logger.log(Level.SEVERE, "Async Server Streaming responseObserver.onError() 호출됨");
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        logger.info("Async Server Streaming 서버 응답 completed");
+                    }
+                }
+        );
+
+        // 서버에서 응답이 올 때까지 기다리지 않고, 호출 결과에 상관없이 다른 작업 수행 가능
+        logger.info("(Nonblocking이면서)Async이니까 원격 메서드 호출 직후 바로 로그가 찍힌다.");
+    }
 }
