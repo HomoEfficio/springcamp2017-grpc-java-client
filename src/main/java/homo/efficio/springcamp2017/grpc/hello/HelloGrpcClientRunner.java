@@ -29,7 +29,12 @@ public class HelloGrpcClientRunner {
 //        clientStubFactory.shutdownChannel();
 
         // Blocking Server Streaming
-        grpcClient.sendBlockingServerStreamingMessage("Blocking Server Streaming, gㅏ벼운 RPC, gPRC");
+//        grpcClient.sendBlockingServerStreamingMessage("Blocking Server Streaming, gㅏ벼운 RPC, gPRC");
+//        clientStubFactory.shutdownChannel();
+
+        // Async Server Streaming
+        grpcClient.sendAsyncServerStreamingMessage("Async Server Streaming, gㅏ벼운 RPC, gRPC");
+        Thread.sleep(3000);
         clientStubFactory.shutdownChannel();
     }
 }
