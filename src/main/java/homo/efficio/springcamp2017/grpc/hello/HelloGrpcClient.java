@@ -3,6 +3,7 @@ package homo.efficio.springcamp2017.grpc.hello;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -74,5 +75,24 @@ public class HelloGrpcClient {
 
         // 서버에서 응답이 올 때까지 기다리지 않고, 호출 결과에 상관없이 다른 작업 수행 가능
         logger.info("(Nonblocking이면서)Async이니까 원격 메서드 호출 직후 바로 로그가 찍힌다.");
+    }
+
+    public void sendBlockingServerStreamingMessage(String clientName) {
+
+        // 클라이언트 비즈니스 로직 수행 결과인 clientName으로 request 생성
+        HelloRequest request = HelloRequest.newBuilder().setClientName(clientName).build();
+        Iterator<HelloResponse> responseIterator;
+
+        try {
+            logger.info("Server Streaming Hello 서비스 Blocking 호출, 메시지 [" + clientName + "]");
+            responseIterator = blockingStub.serverStreamingHello(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.SEVERE, "Server Streaming Hello 서비스 Blocking 호출 중 실패: " + e.getStatus());
+            return;
+        }
+
+        responseIterator.forEachRemaining(
+                (response) -> logger.info("Server Streaming Hello 서비스 응답: " + response.getWelcomeMessage())
+        );
     }
 }
