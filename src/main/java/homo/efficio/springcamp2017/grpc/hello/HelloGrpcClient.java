@@ -164,4 +164,41 @@ public class HelloGrpcClient {
 
         requestObserver.onCompleted();
     }
+
+    // Bidirectional Streaming은 AsyncStub에서만 가능
+    public void sendBidirectionalStreamingMessage(List<String> messages) {
+
+        // 서버에 보낼 콜백 객체
+        StreamObserver<HelloResponse> responseObserver = new StreamObserver<HelloResponse>() {
+            @Override
+            public void onNext(HelloResponse response) {
+                logger.info("Bidirectional Streaming 서버로부터의 응답\n" + response.getWelcomeMessage());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                logger.log(Level.SEVERE, "Bidirectional Streaming responseObserver.onError() 호출됨");
+            }
+
+            @Override
+            public void onCompleted() {
+                logger.info("Bidirectional Streaming 서버 응답 completed");
+            }
+        };
+
+        StreamObserver<HelloRequest> requestObserver = asyncStub.biStreamingHello(responseObserver);
+        try {
+            for (String msg: messages) {
+                requestObserver.onNext(HelloRequest.newBuilder().setClientName(msg).build());
+            }
+        } catch (Exception e) {
+            requestObserver.onError(e);
+            throw e;
+        }
+
+        // 서버에서 응답이 올 때까지 기다리지 않고, 호출 결과에 상관없이 다른 작업 수행 가능
+        logger.info("(Nonblocking이면서)Async이니까 원격 메서드 호출 직후 바로 로그가 찍힌다.");
+
+        requestObserver.onCompleted();
+    }
 }
