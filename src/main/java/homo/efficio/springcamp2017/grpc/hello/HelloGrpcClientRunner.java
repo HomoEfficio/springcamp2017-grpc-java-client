@@ -40,12 +40,17 @@ public class HelloGrpcClientRunner {
 //        clientStubFactory.shutdownChannel();
 
         // Async Client Streaming
-        grpcClient.sendAsyncClientStreamingMessage(Arrays.asList("Async Client Streaming,", "gㅏ벼운 RPC,", "gRPC"));
-        Thread.sleep(3000);
-        clientStubFactory.shutdownChannel();
+//        grpcClient.sendAsyncClientStreamingMessage(Arrays.asList("Async Client Streaming,", "gㅏ벼운 RPC,", "gRPC"));
+//        Thread.sleep(3000);
+//        clientStubFactory.shutdownChannel();
         // 아래와 같이 1초만 대기해서 서버 응답 전에 channel을 닫으면
         // 클라이언트는 응답을 못 받으며, 서버 쪽에서도 에러가 발생하지 않는다.
 //        Thread.sleep(1000);
 //        clientStubFactory.shutdownChannel();
+
+        // Bidirectional Client Streaming
+        grpcClient.sendBidirectionalStreamingMessage(Arrays.asList("Async Bidirectional Streaming,", "gㅏ벼운 RPC,", "gRPC"));
+        Thread.sleep(3000);
+        clientStubFactory.shutdownChannel();
     }
 }
