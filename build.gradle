@@ -25,6 +25,9 @@ buildscript {
 protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:3.6.1"
+
+        // Set the location of generated source code by protoc compiler
+        generatedFilesBaseDir = "$projectDir/gen-src"
     }
     plugins {
         grpc {
@@ -34,6 +37,16 @@ protobuf {
     generateProtoTasks {
         all()*.plugins {
             grpc {}
+        }
+    }
+}
+
+// Add source dir for generated source code of gRPC
+sourceSets {
+    main {
+        java {
+            srcDirs 'gen-src/main/java'
+            srcDirs 'gen-src/main/grpc'
         }
     }
 }
